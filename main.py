@@ -1,15 +1,17 @@
-from typing import Final
-
+from ultralytics import YOLO
+import constants
+from trackers.player_tracker import PlayerTracker
 from utils.video_utils import read_video, save_video
-
-input_video_path: Final = "./input_videos/video_1.mp4"
-output_video_path: Final = "./output_videos/video.avi"
 
 
 def main():
-    video_frames = read_video(input_video_path)
+    video_frames = read_video(constants.INPUT_VIDEO)
 
-    save_video(video_frames, output_video_path)
+    player_tracker = PlayerTracker(model_path=constants.PLAYER_MODEL)
+
+    player_tracks = player_tracker.get_object_tracks(video_frames)
+
+    save_video(video_frames, constants.OUTPUT_VIDEO)
 
 
 if __name__ == "__main__":
