@@ -1,10 +1,16 @@
-from ultralytics import YOLO
+from typing import Final
 
-model = YOLO("yolov8x")
+from utils.video_utils import read_video, save_video
 
-results = model.predict("input_videos/video_1.mp4", save=True)
+input_video_path: Final = "./input_videos/video_1.mp4"
+output_video_path: Final = "./output_videos/video.avi"
 
-print(results)
-print("=========")
-for box in results[0].boxes:
-    print(box.xyxy)
+
+def main():
+    video_frames = read_video(input_video_path)
+
+    save_video(video_frames, output_video_path)
+
+
+if __name__ == "__main__":
+    main()
