@@ -11,10 +11,10 @@ def draw_ellipse(
     track_id: int | None = None,
 ):
     bbox_center = get_bbox_center(bbox)
-    bbox_width = get_bbox_width(bbox)
+    # bbox_width = get_bbox_width(bbox)
 
     center = (int(bbox_center[0]), int(bbox[3]))
-    axes = (int(0.75 * bbox_width), int(0.3 * bbox_width))
+    axes = (80, 20)
 
     cv2.ellipse(
         img=frame,
