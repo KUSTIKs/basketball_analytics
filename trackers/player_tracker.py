@@ -5,7 +5,10 @@ from ultralytics.engine.results import Results
 
 from common_types import FrameT
 from constants import YOLOClassName
-from utils.common import invert_dict
+from utils.cache_utils import file_cache
+from utils.common_utils import invert_dict
+
+type PlayerTrackT = dict[int, TrackMeta]
 
 
 class PlayerTracker:
@@ -35,9 +38,10 @@ class PlayerTracker:
 
         return frames_detections
 
+    @file_cache()
     def get_object_tracks(self, frames: list[FrameT]):
         frames_detections = self.detect_frames(frames)
-        tracks: list[dict[int, TrackMeta]] = []
+        tracks: list[PlayerTrackT] = []
 
         for frame_detections in frames_detections:
             sv_frame_detections = sv.Detections.from_ultralytics(frame_detections)
@@ -45,7 +49,7 @@ class PlayerTracker:
                 sv_frame_detections
             )
 
-            track: dict[int, TrackMeta] = {}
+            track: PlayerTrackT = {}
 
             for frame_detection in tracked_frame_detections:
                 bbox = frame_detection[0].tolist()
@@ -68,4 +72,4 @@ class PlayerTracker:
 
 
 class TrackMeta(TypedDict):
-    bbox: list[int]
+    bbox: list[float]

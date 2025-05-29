@@ -2,6 +2,7 @@
 models/
 runs/
 output_videos/
+cache/
 __pycache__/
 *.pt
 *.avi
