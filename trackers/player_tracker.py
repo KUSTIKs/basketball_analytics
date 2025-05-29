@@ -8,7 +8,7 @@ from constants import YOLOClassName
 from utils.cache_utils import file_cache
 from utils.common_utils import invert_dict
 
-type PlayerTrackT = dict[int, TrackMeta]
+type PlayerTrackT = dict[int, PlayerTrackMeta]
 
 
 class PlayerTracker:
@@ -64,12 +64,12 @@ class PlayerTracker:
                 ):
                     continue
 
-                track[track_id] = TrackMeta(bbox=bbox)
+                track[track_id] = PlayerTrackMeta(bbox=bbox)
 
             tracks.append(track)
 
         return tracks
 
 
-class TrackMeta(TypedDict):
+class PlayerTrackMeta(TypedDict):
     bbox: list[float]

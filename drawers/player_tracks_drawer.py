@@ -12,7 +12,12 @@ class PlayerTracksDrawer:
             player_track = tracks[i]
 
             for track_id, meta in player_track.items():
-                frame = draw_ellipse(frame, meta.get("bbox"), (0, 0, 255), track_id)
+                frame = draw_ellipse(
+                    frame=frame,
+                    bbox=meta.get("bbox"),
+                    color=(0, 0, 255),
+                    track_id=track_id,
+                )
 
             result_frames.append(frame)
 

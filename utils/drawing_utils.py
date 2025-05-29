@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 from common_types import FrameT
 
@@ -62,6 +63,47 @@ def draw_ellipse(
         color=(255, 255, 255),
         thickness=1,
         lineType=cv2.LINE_AA,
+    )
+
+    return frame
+
+
+def draw_triangle(
+    frame: FrameT,
+    bbox: list[float],
+    color: cv2.typing.Scalar,
+):
+    bbox_center = get_bbox_center(bbox)
+
+    triangle_height = 20
+    triangle_width = 20
+
+    bottom_point = (int(bbox_center[0]), int(bbox[1]))
+    top_left_point = (
+        bottom_point[0] - triangle_width // 2,
+        bottom_point[1] - triangle_height,
+    )
+    top_right_point = (
+        bottom_point[0] + triangle_width // 2,
+        bottom_point[1] - triangle_height,
+    )
+
+    triangle_points = np.array([bottom_point, top_left_point, top_right_point])
+
+    cv2.drawContours(
+        image=frame,
+        contours=[triangle_points],
+        contourIdx=0,
+        color=color,
+        thickness=cv2.FILLED,
+    )
+
+    cv2.drawContours(
+        image=frame,
+        contours=[triangle_points],
+        contourIdx=0,
+        color=(255, 255, 255),
+        thickness=2,
     )
 
     return frame

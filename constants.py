@@ -14,3 +14,4 @@ CACHE_DIR: Final = "./cache"
 
 class YOLOClassName(str, Enum):
     PLAYER = "Player"
+    BALL = "Ball"
