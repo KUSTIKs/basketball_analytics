@@ -3,6 +3,7 @@ from drawers.ball_tracks_drawer import BallTracksDrawer
 from drawers.player_tracks_drawer import PlayerTracksDrawer
 from trackers.ball_tracker import BallTracker
 from trackers.player_tracker import PlayerTracker
+from utils.team_assigner import TeamAssigner
 from utils.video_utils import read_video, save_video
 
 
@@ -13,13 +14,19 @@ def main():
     ball_tracker = BallTracker(model_path=constants.BALL_MODEL)
     player_tracks_drawer = PlayerTracksDrawer()
     ball_tracks_drawer = BallTracksDrawer()
+    team_assigner = TeamAssigner(
+        team_a_class="Dark blue shirt", team_b_class="White shirt"
+    )
 
     player_tracks = player_tracker.get_object_tracks(video_frames)
+
+    teams = team_assigner.get_teams(video_frames, player_tracks)
+
     ball_tracks = ball_tracker.get_object_tracks(video_frames)
     ball_tracks = ball_tracker.remove_wrong_tracks(ball_tracks)
     ball_tracks = ball_tracker.interpolate_tracks(ball_tracks)
 
-    result = player_tracks_drawer.draw(video_frames, player_tracks)
+    result = player_tracks_drawer.draw(video_frames, player_tracks, teams)
     result = ball_tracks_drawer.draw(result, ball_tracks)
 
     save_video(result, constants.OUTPUT_VIDEO)

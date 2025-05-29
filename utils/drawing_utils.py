@@ -1,13 +1,13 @@
 import cv2
 import numpy as np
 
-from common_types import FrameT
+from common_types import ColorT, FrameT
 
 
 def draw_ellipse(
     frame: FrameT,
     bbox: list[float],
-    color: cv2.typing.Scalar,
+    color: ColorT,
     track_id: int | None = None,
 ):
     bbox_center = get_bbox_center(bbox)
@@ -71,7 +71,7 @@ def draw_ellipse(
 def draw_triangle(
     frame: FrameT,
     bbox: list[float],
-    color: cv2.typing.Scalar,
+    color: ColorT,
 ):
     bbox_center = get_bbox_center(bbox)
 

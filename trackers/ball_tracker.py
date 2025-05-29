@@ -47,7 +47,9 @@ class BallTracker:
         tracks: list[BallTrackT] = []
 
         for frame_detections in frames_detections:
-            sv_frame_detections = sv.Detections.from_ultralytics(frame_detections)
+            sv_frame_detections = sv.Detections.from_ultralytics(
+                frame_detections,
+            )
 
             track: BallTrackT = None
             max_confidence = 0
