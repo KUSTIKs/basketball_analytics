@@ -14,8 +14,6 @@ class PlayerTracksDrawer:
             for track_id, meta in player_track.items():
                 frame = draw_ellipse(frame, meta.get("bbox"), (0, 0, 255), track_id)
 
-                result_frames.append(frame)
-
             result_frames.append(frame)
 
         return result_frames
