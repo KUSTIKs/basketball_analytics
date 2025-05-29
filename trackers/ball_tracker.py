@@ -1,3 +1,4 @@
+import math
 from typing import Final, TypedDict
 import supervision as sv
 from ultralytics import YOLO
@@ -7,6 +8,7 @@ from common_types import FrameT
 from constants import YOLOClassName
 from utils.cache_utils import file_cache
 from utils.common_utils import invert_dict
+from utils.drawing_utils import get_bbox_center
 
 type BallTrackT = BallTrackMeta | None
 
@@ -67,6 +69,44 @@ class BallTracker:
                 break
 
             tracks.append(track)
+
+        return tracks
+
+    def remove_wrong_tracks(self, tracks: list[BallTrackT]):
+        MAX_DISTANCE_PER_FRAME: Final = 25
+        last_detection_index: int | None = None
+
+        for i, track in enumerate(tracks):
+            if track is None:
+                continue
+
+            bbox = track.get("bbox")
+            if bbox is None:
+                continue
+
+            if (
+                last_detection_index is None
+                or (last_detection := tracks[last_detection_index]) is None
+            ):
+                last_detection_index = i
+                continue
+
+            last_ball_bbox = last_detection.get("bbox")
+
+            new_ball_position = get_bbox_center(bbox)
+            last_ball_position = get_bbox_center(last_ball_bbox)
+            distance = math.hypot(
+                new_ball_position[0] - last_ball_position[0],
+                new_ball_position[1] - last_ball_position[1],
+            )
+
+            frames_passed = i - last_detection_index
+            max_distance = MAX_DISTANCE_PER_FRAME * frames_passed
+
+            if distance > max_distance:
+                tracks[i] = None
+            else:
+                last_detection_index = i
 
         return tracks
 

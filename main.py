@@ -1,4 +1,3 @@
-from ultralytics import YOLO
 import constants
 from drawers.ball_tracks_drawer import BallTracksDrawer
 from drawers.player_tracks_drawer import PlayerTracksDrawer
@@ -17,17 +16,12 @@ def main():
 
     player_tracks = player_tracker.get_object_tracks(video_frames)
     ball_tracks = ball_tracker.get_object_tracks(video_frames)
+    ball_tracks = ball_tracker.remove_wrong_tracks(ball_tracks)
 
-    # result = player_tracks_drawer.draw(video_frames, player_tracks)
-    result = ball_tracks_drawer.draw(video_frames, ball_tracks)
+    result = player_tracks_drawer.draw(video_frames, player_tracks)
+    result = ball_tracks_drawer.draw(result, ball_tracks)
 
     save_video(result, constants.OUTPUT_VIDEO)
-
-    # model = YOLO(model=constants.PLAYER_MODEL)
-
-    # results = model.predict(
-    #     source=constants.INPUT_VIDEO, save=True, project="output_videos"
-    # )
 
 
 if __name__ == "__main__":
