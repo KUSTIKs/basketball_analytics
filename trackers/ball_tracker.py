@@ -1,5 +1,6 @@
 import math
 from typing import Final, TypedDict
+import pandas as pd
 import supervision as sv
 from ultralytics import YOLO
 from ultralytics.engine.results import Results
@@ -109,6 +110,20 @@ class BallTracker:
                 last_detection_index = i
 
         return tracks
+
+    def interpolate_tracks(self, tracks: list[BallTrackT]):
+        positions = [{} if track is None else track.get("bbox") for track in tracks]
+
+        df_positions = pd.DataFrame(positions, columns=["x1", "y1", "x2", "y2"])
+        df_positions.interpolate(method="linear", inplace=True)
+        df_positions.fillna("ffill", inplace=True)
+        df_positions.fillna("bfill", inplace=True)
+
+        updated_tracks: list[BallTrackT] = [
+            BallTrackMeta(bbox=position) for position in df_positions.values.tolist()
+        ]
+
+        return updated_tracks
 
 
 class BallTrackMeta(TypedDict):

@@ -17,6 +17,7 @@ def main():
     player_tracks = player_tracker.get_object_tracks(video_frames)
     ball_tracks = ball_tracker.get_object_tracks(video_frames)
     ball_tracks = ball_tracker.remove_wrong_tracks(ball_tracks)
+    ball_tracks = ball_tracker.interpolate_tracks(ball_tracks)
 
     result = player_tracks_drawer.draw(video_frames, player_tracks)
     result = ball_tracks_drawer.draw(result, ball_tracks)
