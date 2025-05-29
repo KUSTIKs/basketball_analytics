@@ -1,6 +1,7 @@
 import constants
 from drawers.ball_tracks_drawer import BallTracksDrawer
 from drawers.player_tracks_drawer import PlayerTracksDrawer
+from trackers.ball_acquisition_detector import BallAcquisitionDetector
 from trackers.ball_tracker import BallTracker
 from trackers.player_tracker import PlayerTracker
 from utils.team_assigner import TeamAssigner
@@ -17,6 +18,7 @@ def main():
     team_assigner = TeamAssigner(
         team_a_class="Dark blue shirt", team_b_class="White shirt"
     )
+    ball_acquisition_detector = BallAcquisitionDetector()
 
     player_tracks = player_tracker.get_object_tracks(video_frames)
 
@@ -26,7 +28,13 @@ def main():
     ball_tracks = ball_tracker.remove_wrong_tracks(ball_tracks)
     ball_tracks = ball_tracker.interpolate_tracks(ball_tracks)
 
-    result = player_tracks_drawer.draw(video_frames, player_tracks, teams)
+    ball_acquirers = ball_acquisition_detector.get_ball_acquirers(
+        ball_tracks, player_tracks
+    )
+
+    result = player_tracks_drawer.draw(
+        video_frames, player_tracks, teams, ball_acquirers
+    )
     result = ball_tracks_drawer.draw(result, ball_tracks)
 
     save_video(result, constants.OUTPUT_VIDEO)

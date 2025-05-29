@@ -78,7 +78,6 @@ class TeamAssigner:
 
                 if track_id in self.team_cache:
                     team = self.team_cache[track_id]
-                    print(f"Using cached team for track {track_id}: {team}")
                 else:
                     team = self.get_player_team(frames[i], bbox)
                     self.team_cache[track_id] = team
