@@ -1,16 +1,17 @@
 import cv2
 import numpy as np
 
-from common_types import ColorT, FrameT
+from common_types import ColorT, FrameT, RectCoordsT
+from utils.geometry_utils import get_rect_center
 
 
 def draw_ellipse(
     frame: FrameT,
-    bbox: list[float],
+    bbox: RectCoordsT,
     color: ColorT,
     track_id: int | None = None,
 ):
-    bbox_center = get_bbox_center(bbox)
+    bbox_center = get_rect_center(bbox)
     # bbox_width = get_bbox_width(bbox)
 
     center = (int(bbox_center[0]), int(bbox[3]))
@@ -70,10 +71,10 @@ def draw_ellipse(
 
 def draw_triangle(
     frame: FrameT,
-    bbox: list[float],
+    bbox: RectCoordsT,
     color: ColorT,
 ):
-    bbox_center = get_bbox_center(bbox)
+    bbox_center = get_rect_center(bbox)
 
     triangle_height = 20
     triangle_width = 20
@@ -107,24 +108,3 @@ def draw_triangle(
     )
 
     return frame
-
-
-def get_bbox_center(bbox: list[float]):
-    x1, y1, x2, y2 = bbox
-
-    x = (x1 + x2) / 2
-    y = (y1 + y2) / 2
-
-    return x, y
-
-
-def get_bbox_width(bbox: list[float]):
-    x1, _, x2, _ = bbox
-
-    return x2 - x1
-
-
-def get_bbox_height(bbox: list[float]):
-    _, y1, _, y2 = bbox
-
-    return y2 - y1

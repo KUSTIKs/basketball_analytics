@@ -5,21 +5,21 @@ import supervision as sv
 from ultralytics import YOLO
 from ultralytics.engine.results import Results
 
-from common_types import FrameT
+from common_types import FrameT, RectCoordsT
 from constants import YOLOClassName
 from utils.cache_utils import file_cache
 from utils.common_utils import invert_dict
-from utils.drawing_utils import get_bbox_center
+from utils.geometry_utils import get_rect_center
 
 type BallTrackT = BallTrackMeta | None
 
 
 class BallTracker:
+    CONFIDENCE: Final = 0.5
+
     model: YOLO
     tracker: sv.ByteTrack
     yolo_id: int
-
-    CONFIDENCE: Final = 0.5
 
     def __init__(self, model_path: str):
         self.model = YOLO(model_path)
@@ -96,8 +96,8 @@ class BallTracker:
 
             last_ball_bbox = last_detection.get("bbox")
 
-            new_ball_position = get_bbox_center(bbox)
-            last_ball_position = get_bbox_center(last_ball_bbox)
+            new_ball_position = get_rect_center(bbox)
+            last_ball_position = get_rect_center(last_ball_bbox)
             distance = math.hypot(
                 new_ball_position[0] - last_ball_position[0],
                 new_ball_position[1] - last_ball_position[1],
@@ -129,4 +129,4 @@ class BallTracker:
 
 
 class BallTrackMeta(TypedDict):
-    bbox: list[float]
+    bbox: RectCoordsT

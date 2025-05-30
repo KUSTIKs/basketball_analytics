@@ -39,7 +39,7 @@ class PlayerTracksDrawer:
                     frame = draw_triangle(
                         frame=frame,
                         bbox=meta.get("bbox"),
-                        color=color,
+                        color=(0, 0, 255),
                     )
 
             result_frames.append(frame)

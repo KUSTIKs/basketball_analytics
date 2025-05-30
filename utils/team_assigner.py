@@ -3,7 +3,7 @@ import cv2
 from transformers import CLIPModel, CLIPProcessor
 from PIL import Image
 
-from common_types import FrameT
+from common_types import FrameT, RectCoordsT
 from constants import TeamNumber
 from trackers.player_tracker import PlayerTrackT
 from utils.cache_utils import file_cache
@@ -34,7 +34,7 @@ class TeamAssigner:
 
         self.preprocessor = preprocessor
 
-    def get_player_team(self, frame: FrameT, bbox: list[float]):
+    def get_player_team(self, frame: FrameT, bbox: RectCoordsT):
         image = frame[int(bbox[1]) : int(bbox[3]), int(bbox[0]) : int(bbox[2])]
         rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         pil_image = Image.fromarray(rgb_image)

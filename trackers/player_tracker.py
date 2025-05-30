@@ -3,7 +3,7 @@ import supervision as sv
 from ultralytics import YOLO
 from ultralytics.engine.results import Results
 
-from common_types import FrameT
+from common_types import FrameT, RectCoordsT
 from constants import YOLOClassName
 from utils.cache_utils import file_cache
 from utils.common_utils import invert_dict
@@ -12,11 +12,11 @@ type PlayerTrackT = dict[int, PlayerTrackMeta]
 
 
 class PlayerTracker:
+    CONFIDENCE: Final = 0.5
+
     model: YOLO
     tracker: sv.ByteTrack
     yolo_id: int
-
-    CONFIDENCE: Final = 0.5
 
     def __init__(self, model_path: str):
         self.model = YOLO(model_path)
@@ -72,4 +72,4 @@ class PlayerTracker:
 
 
 class PlayerTrackMeta(TypedDict):
-    bbox: list[float]
+    bbox: RectCoordsT

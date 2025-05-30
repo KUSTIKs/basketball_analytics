@@ -1,7 +1,9 @@
 import math
 
+from common_types import RectCoordsT
 
-def get_shortest_distance_between_rects(rect1: list[float], rect2: list[float]):
+
+def get_shortest_distance_between_rects(rect1: RectCoordsT, rect2: RectCoordsT):
     x1_min, y1_min, x1_max, y1_max = rect1
     x2_min, y2_min, x2_max, y2_max = rect2
 
@@ -20,7 +22,7 @@ def get_shortest_distance_between_rects(rect1: list[float], rect2: list[float]):
     return math.hypot(dx, dy)
 
 
-def get_containment_ratio(rect1: list[float], rect2: list[float]):
+def get_containment_ratio(rect1: RectCoordsT, rect2: RectCoordsT):
     x1_min, y1_min, x1_max, y1_max = rect1
     x2_min, y2_min, x2_max, y2_max = rect2
 
@@ -44,3 +46,24 @@ def get_containment_ratio(rect1: list[float], rect2: list[float]):
     rect1_area = (x1_max - x1_min) * (y1_max - y1_min)
 
     return intersection_area / rect1_area if rect1_area > 0 else 0.0
+
+
+def get_rect_center(rect: RectCoordsT):
+    x1, y1, x2, y2 = rect
+
+    x = (x1 + x2) / 2
+    y = (y1 + y2) / 2
+
+    return x, y
+
+
+def get_rect_width(rect: RectCoordsT):
+    x1, _, x2, _ = rect
+
+    return x2 - x1
+
+
+def get_rect_height(rect: RectCoordsT):
+    _, y1, _, y2 = rect
+
+    return y2 - y1
