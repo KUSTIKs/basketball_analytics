@@ -13,11 +13,6 @@ class BallAcquisitionDetector:
     DISTANCE_THRESHOLD = 100
     MIN_FRAMES_TO_CONFIRM = 12
 
-    def is_ball_contained(self, ball_bbox: RectCoordsT, player_bbox: RectCoordsT):
-        ratio = get_containment_ratio(ball_bbox, player_bbox)
-
-        return ratio > self.CONTAINMENT_THRESHOLD
-
     def get_best_candidate(self, ball_bbox: RectCoordsT, player_track: PlayerTrackT):
         best_candidate_id: int | None = None
         best_containment_ratio: float | None = None
@@ -73,7 +68,6 @@ class BallAcquisitionDetector:
             if current_acquirer == streak_acquirer:
                 streak_counter += 1
             else:
-                active_acquirer = None
                 streak_acquirer = current_acquirer
                 streak_counter = 1
 

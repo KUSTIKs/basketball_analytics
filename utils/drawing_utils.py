@@ -108,3 +108,25 @@ def draw_triangle(
     )
 
     return frame
+
+
+def put_text(
+    img: cv2.typing.MatLike,
+    text: str,
+    org: cv2.typing.Point,
+    font_face: int = cv2.FONT_HERSHEY_SIMPLEX,
+    font_scale: float = 0.7,
+    color: cv2.typing.Scalar = (0, 0, 0),
+    thickness: int = 1,
+    line_type: int = cv2.LINE_AA,
+):
+    return cv2.putText(
+        img=img,
+        text=text,
+        org=org,
+        fontFace=font_face,
+        fontScale=font_scale,
+        color=color,
+        thickness=thickness,
+        lineType=line_type,
+    )

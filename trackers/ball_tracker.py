@@ -16,6 +16,7 @@ type BallTrackT = BallTrackMeta | None
 
 class BallTracker:
     CONFIDENCE: Final = 0.5
+    MAX_DISTANCE_PER_FRAME: Final = 50
 
     model: YOLO
     tracker: sv.ByteTrack
@@ -69,14 +70,12 @@ class BallTracker:
 
                 max_confidence = confidence
                 track = BallTrackMeta(bbox=bbox)
-                break
 
             tracks.append(track)
 
         return tracks
 
     def remove_wrong_tracks(self, tracks: list[BallTrackT]):
-        MAX_DISTANCE_PER_FRAME: Final = 25
         last_detection_index: int | None = None
 
         for i, track in enumerate(tracks):
@@ -104,7 +103,7 @@ class BallTracker:
             )
 
             frames_passed = i - last_detection_index
-            max_distance = MAX_DISTANCE_PER_FRAME * frames_passed
+            max_distance = self.MAX_DISTANCE_PER_FRAME * frames_passed
 
             if distance > max_distance:
                 tracks[i] = None
@@ -114,12 +113,12 @@ class BallTracker:
         return tracks
 
     def interpolate_tracks(self, tracks: list[BallTrackT]):
-        positions = [{} if track is None else track.get("bbox") for track in tracks]
+        positions = [track.get("bbox") if track else [None] * 4 for track in tracks]
 
         df_positions = pd.DataFrame(positions, columns=["x1", "y1", "x2", "y2"])
         df_positions.interpolate(method="linear", inplace=True)
-        df_positions.fillna("ffill", inplace=True)
-        df_positions.fillna("bfill", inplace=True)
+
+        df_positions = df_positions.bfill().ffill()
 
         updated_tracks: list[BallTrackT] = [
             BallTrackMeta(bbox=position) for position in df_positions.values.tolist()

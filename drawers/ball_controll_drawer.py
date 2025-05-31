@@ -1,6 +1,7 @@
 import cv2
 from common_types import FrameT
 from constants import TeamNumber
+from utils.drawing_utils import put_text
 
 
 class BallControllDrawer:
@@ -46,8 +47,8 @@ class BallControllDrawer:
         team_b_rate: float,
     ):
         height, width, _ = frame.shape
-        box_height = int(height * 0.15)
-        box_width = int(width * 0.3)
+        box_height = int(height * 0.1)
+        box_width = int(width * 0.4)
 
         overlay = frame.copy()
         alpha = 0.7
@@ -68,31 +69,16 @@ class BallControllDrawer:
             src1=overlay, alpha=alpha, src2=frame, beta=1 - alpha, gamma=0, dst=frame
         )
 
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        font_scale = 0.6
-        font_color = (0, 0, 0)
-        thickness = 1
-        line_height = int((box_height - 10) / 3)
-
         lines = [
-            "Ball controll",
-            f"Team A: {team_a_rate:.1f}%",
-            f"Team B: {team_b_rate:.1f}%",
+            f"Team A: {team_a_rate:.1f}% ball control",
+            f"Team B: {team_b_rate:.1f}% ball control",
         ]
+        line_height = int((box_height - 10) / len(lines))
 
         text_x = box_x1 + 10
-        text_y = box_y1 + line_height - 5
+        text_y = box_y1 + line_height
 
         for i, line in enumerate(lines):
-            cv2.putText(
-                img=frame,
-                text=line,
-                org=(text_x, text_y + i * line_height),
-                fontFace=font,
-                fontScale=font_scale,
-                color=font_color,
-                thickness=thickness,
-                lineType=cv2.LINE_AA,
-            )
+            put_text(img=frame, text=line, org=(text_x, text_y + i * line_height))
 
         return frame

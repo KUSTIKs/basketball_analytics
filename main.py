@@ -1,9 +1,11 @@
 import constants
 from drawers.ball_tracks_drawer import BallTracksDrawer
+from drawers.interception_drawer import InterceptionDrawer
 from drawers.player_tracks_drawer import PlayerTracksDrawer
 from drawers.ball_controll_drawer import BallControllDrawer
 from trackers.ball_acquisition_detector import BallAcquisitionDetector
 from trackers.ball_tracker import BallTracker
+from trackers.interception_detector import InterceptionDetector
 from trackers.player_tracker import PlayerTracker
 from utils.team_assigner import TeamAssigner
 from utils.video_utils import read_video, save_video
@@ -16,11 +18,14 @@ def main():
     ball_tracker = BallTracker(model_path=constants.BALL_MODEL)
     player_tracks_drawer = PlayerTracksDrawer()
     ball_tracks_drawer = BallTracksDrawer()
+    ball_controll_drawer = BallControllDrawer()
+    interception_drawer = InterceptionDrawer()
     team_assigner = TeamAssigner(
-        team_a_class="Dark blue shirt", team_b_class="White shirt"
+        team_a_class="Dark blue shirt",
+        team_b_class="White shirt",
     )
     ball_acquisition_detector = BallAcquisitionDetector()
-    ball_controll_drawer = BallControllDrawer()
+    interception_detector = InterceptionDetector()
 
     player_tracks = player_tracker.get_object_tracks(video_frames)
 
@@ -33,12 +38,16 @@ def main():
     ball_acquirers = ball_acquisition_detector.get_ball_acquirers(
         ball_tracks, player_tracks
     )
+    passes, interceptions = interception_detector.get_passes_and_interceptions(
+        ball_acquirers, teams
+    )
 
     result = player_tracks_drawer.draw(
         video_frames, player_tracks, teams, ball_acquirers
     )
     result = ball_tracks_drawer.draw(result, ball_tracks)
     result = ball_controll_drawer.draw(result, teams, ball_acquirers)
+    result = interception_drawer.draw(result, passes, interceptions)
 
     save_video(result, constants.OUTPUT_VIDEO)
 
