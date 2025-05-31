@@ -70,9 +70,11 @@ class InterceptionDrawer:
             pt1=(box_x1, box_y1),
             pt2=(box_x2, box_y2),
             color=(255, 255, 255),
-            thickness=-1,
+            thickness=cv2.FILLED,
         )
-        cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
+        cv2.addWeighted(
+            src1=overlay, alpha=alpha, src2=frame, beta=1 - alpha, gamma=0, dst=frame
+        )
 
         lines = [
             f"Team A: {team_a_passes} passes, {team_a_interceptions} interceptions",

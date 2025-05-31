@@ -1,4 +1,8 @@
 import math
+from typing import cast
+
+import cv2
+import numpy as np
 
 from common_types import RectCoordsT
 
@@ -67,3 +71,13 @@ def get_rect_height(rect: RectCoordsT):
     _, y1, _, y2 = rect
 
     return y2 - y1
+
+
+def get_point_distance(point1: tuple[float, float], point2: tuple[float, float]):
+    return math.hypot(point1[0] - point2[0], point1[1] - point2[1])
+
+
+def project(point: tuple[float, float], matrix: cv2.typing.MatLike):
+    pt = np.array([[point]], dtype=np.float32)
+    projected = cv2.perspectiveTransform(pt, matrix)
+    return cast(tuple[float, float], tuple(projected[0][0]))
