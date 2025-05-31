@@ -1,3 +1,7 @@
+import argparse
+import os
+from pathlib import Path
+
 import constants
 from drawers.ball_tracks_drawer import BallTracksDrawer
 from drawers.diagram_drawer import DiagramDrawer
@@ -9,15 +13,44 @@ from trackers.ball_acquisition_detector import BallAcquisitionDetector
 from trackers.ball_tracker import BallTracker
 from trackers.court_keypoints_detector import CourtKeypointsDetector
 from trackers.interception_detector import InterceptionDetector
+from trackers.player_movement_calculator import PlayerMovementCalculator
 from trackers.player_tracker import PlayerTracker
 from utils.diagram_converter import DiagramConverter
 from utils.team_assigner import TeamAssigner
 from utils.video_utils import read_video, save_video
-import supervision as sv
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Process basketball video.")
+    parser.add_argument(
+        "input_video",
+        type=str,
+        nargs="?",
+        default=constants.INPUT_VIDEO,
+        help="Path to the input video file.",
+    )
+    parser.add_argument(
+        "--output-video",
+        type=str,
+        dest="output_video",
+        default=constants.OUTPUT_VIDEO,
+        help="Path to save the output video file.",
+    )
+
+    return parser.parse_args()
 
 
 def main():
-    video_frames = read_video(constants.INPUT_VIDEO)
+    args = parse_args()
+
+    if not os.path.exists(args.input_video):
+        raise FileNotFoundError(
+            f"Input video file '{args.input_video}' does not exist."
+        )
+
+    Path(args.output_video).parent.mkdir(parents=True, exist_ok=True)
+
+    video_frames = read_video(args.input_video)
 
     player_tracker = PlayerTracker(model_path=constants.PLAYER_MODEL)
     ball_tracker = BallTracker(model_path=constants.BALL_MODEL)
@@ -37,6 +70,7 @@ def main():
     ball_acquisition_detector = BallAcquisitionDetector()
     interception_detector = InterceptionDetector()
     diagram_converter = DiagramConverter()
+    player_movement_calculator = PlayerMovementCalculator()
 
     player_tracks = player_tracker.get_object_tracks(video_frames)
 
@@ -55,9 +89,10 @@ def main():
     court_keypoints = court_keypoints_detector.get_keypoints(video_frames)
     court_keypoints = diagram_converter.validate_keypoints(court_keypoints)
     player_positions = diagram_converter.project_players(court_keypoints, player_tracks)
+    movement_stats = player_movement_calculator.get_movement_stats(player_positions)
 
     result = player_tracks_drawer.draw(
-        video_frames, player_tracks, teams, ball_acquirers
+        video_frames, player_tracks, teams, ball_acquirers, movement_stats
     )
     result = ball_tracks_drawer.draw(result, ball_tracks)
     result = ball_controll_drawer.draw(result, teams, ball_acquirers)
@@ -65,16 +100,7 @@ def main():
     result = court_keypoints_drawer.draw(result, court_keypoints)
     result = diagram_drawer.draw(result, player_positions, teams, ball_acquirers)
 
-    # for i, frame in enumerate(result):
-    #     frame = sv.draw_text(
-    #         scene=frame,
-    #         text=f"Frame: {i + 1}",
-    #         text_anchor=sv.Point(x=frame.shape[1] - 100, y=30),
-    #         text_color=sv.Color.WHITE,
-    #     )
-    #     result[i] = frame
-
-    save_video(result, constants.OUTPUT_VIDEO)
+    save_video(result, args.output_video)
 
 
 if __name__ == "__main__":
