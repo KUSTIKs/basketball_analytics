@@ -42,7 +42,7 @@ class BallTracker:
 
         return frames_detections
 
-    @file_cache()
+    # @file_cache()
     def get_object_tracks(self, frames: list[FrameT]):
         frames_detections = self.detect_frames(frames)
         tracks: list[BallTrackT] = []

@@ -25,7 +25,7 @@ class TeamAssigner:
     def load_model(self):
         self.model = CLIPModel.from_pretrained(self.MODEL_PATH)
 
-        preprocessor = CLIPProcessor.from_pretrained(self.MODEL_PATH)
+        preprocessor = CLIPProcessor.from_pretrained(self.MODEL_PATH, use_fast=False)
 
         if type(preprocessor) is not CLIPProcessor:
             raise TypeError(
@@ -54,7 +54,7 @@ class TeamAssigner:
 
         return TeamNumber(result)
 
-    @file_cache()
+    # @file_cache()
     def get_teams(
         self,
         frames: list[FrameT],

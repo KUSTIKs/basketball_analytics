@@ -14,7 +14,7 @@ class CourtKeypointsDetector:
     def __init__(self, model_path: str):
         self.model = YOLO(model_path)
 
-    @file_cache()
+    # @file_cache()
     def get_keypoints(self, frames: list[FrameT]):
         BATCH_SIZE: Final = 20
         frames_detections: list[Results] = []

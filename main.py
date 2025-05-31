@@ -16,6 +16,7 @@ from trackers.interception_detector import InterceptionDetector
 from trackers.player_movement_calculator import PlayerMovementCalculator
 from trackers.player_tracker import PlayerTracker
 from utils.diagram_converter import DiagramConverter
+from utils.models_utils import download_models
 from utils.team_assigner import TeamAssigner
 from utils.video_utils import read_video, save_video
 
@@ -36,12 +37,25 @@ def parse_args():
         default=constants.OUTPUT_VIDEO,
         help="Path to save the output video file.",
     )
+    parser.add_argument(
+        "--team-a-class",
+        dest="team_a_class",
+        type=str,
+        default="Dark blue shirt",
+    )
+    parser.add_argument(
+        "--team-b-class",
+        dest="team_b_class",
+        type=str,
+        default="White shirt",
+    )
 
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
+    download_models()
 
     if not os.path.exists(args.input_video):
         raise FileNotFoundError(
@@ -64,8 +78,8 @@ def main():
     court_keypoints_drawer = CourtKeypointsDrawer()
     diagram_drawer = DiagramDrawer()
     team_assigner = TeamAssigner(
-        team_a_class="Dark blue shirt",
-        team_b_class="White shirt",
+        team_a_class=args.team_a_class,
+        team_b_class=args.team_b_class,
     )
     ball_acquisition_detector = BallAcquisitionDetector()
     interception_detector = InterceptionDetector()
@@ -101,6 +115,8 @@ def main():
     result = diagram_drawer.draw(result, player_positions, teams, ball_acquirers)
 
     save_video(result, args.output_video)
+
+    print(f"Processed video saved to: {args.output_video}")
 
 
 if __name__ == "__main__":
