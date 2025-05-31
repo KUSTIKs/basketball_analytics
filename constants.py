@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Final
 
 
-INPUT_VIDEO: Final = "./input_videos/video_3.mp4"
+INPUT_VIDEO: Final = "./input_videos/video_1.mp4"
 OUTPUT_VIDEO: Final = "./output_videos/video.avi"
 
 PLAYER_MODEL: Final = "./models/player_detector.pt"

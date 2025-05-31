@@ -54,6 +54,7 @@ def main():
     )
     court_keypoints = court_keypoints_detector.get_keypoints(video_frames)
     court_keypoints = diagram_converter.validate_keypoints(court_keypoints)
+    player_positions = diagram_converter.project_players(court_keypoints, player_tracks)
 
     result = player_tracks_drawer.draw(
         video_frames, player_tracks, teams, ball_acquirers
@@ -62,7 +63,7 @@ def main():
     result = ball_controll_drawer.draw(result, teams, ball_acquirers)
     result = interception_drawer.draw(result, passes, interceptions)
     result = court_keypoints_drawer.draw(result, court_keypoints)
-    result = diagram_drawer.draw(result, diagram_converter.REAL_KEYPOINTS)
+    result = diagram_drawer.draw(result, player_positions, teams, ball_acquirers)
 
     # for i, frame in enumerate(result):
     #     frame = sv.draw_text(
