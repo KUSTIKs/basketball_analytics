@@ -32,18 +32,22 @@ class PlayerMovementCalculator:
 
                     distance_delta = get_point_distance(previous_position, position)
 
-                if frame_index > self.FRAMES_FOR_SPEED_CALCULATION:
+                if frame_index >= self.FRAMES_FOR_SPEED_CALCULATION:
                     stats_slice = movement_stats[
                         frame_index
                         - self.FRAMES_FOR_SPEED_CALCULATION : frame_index
                         + 1
                     ]
-                    distance_moved = sum(
-                        [
-                            record.get(player_id, {}).get("distance_delta", 0)
-                            for record in stats_slice
-                        ]
+                    distance_moved = (
+                        sum(
+                            [
+                                record.get(player_id, {}).get("distance_delta", 0)
+                                for record in stats_slice
+                            ]
+                        )
+                        + distance_delta
                     )
+
                     speed = (
                         distance_moved / self.FRAMES_FOR_SPEED_CALCULATION * self.fps
                     )

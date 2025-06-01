@@ -5,7 +5,6 @@ from ultralytics.engine.results import Results
 
 from common_types import FrameT, RectCoordsT
 from constants import YOLOClassName
-from utils.cache_utils import file_cache
 from utils.common_utils import invert_dict
 
 type PlayerTrackT = dict[int, PlayerTrackMeta]
